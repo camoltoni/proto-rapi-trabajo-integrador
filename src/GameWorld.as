@@ -6,6 +6,7 @@ package
 	import flash.events.TimerEvent;
 	import flash.utils.Timer;
 	import net.flashpunk.FP;
+	import net.flashpunk.Sfx;
 	import net.flashpunk.World;
 	import net.flashpunk.graphics.Emitter;
 	import net.flashpunk.graphics.Image;
@@ -19,6 +20,7 @@ package
 	{
 		[Embed(source = "assets/background.png")] private const BACK:Class;
 		[Embed(source = "assets/foreground.png")] private const FORE:Class;
+		[Embed(source = "assets/theme.mp3")] private const THEME:Class;
 		public static const SCALE:Number = 24;
 		public static const GRID:Number = 16;
 		
@@ -29,6 +31,8 @@ package
 		public var timer:Timer;
 		private var ticks:int = -3;
 		private var emitter:Emitter;
+		private var themeSfx:Sfx;
+		
 		public function GameWorld() 
 		{
 			FP.screen.color = 0xd1dffa;
@@ -43,6 +47,9 @@ package
 			emitter.setColor("explode", 0x4d9595, 0x4fbaba);
 			emitter.relative = false;
 			addGraphic(emitter);
+			themeSfx = new Sfx(THEME);
+			themeSfx.loop(0.4);
+			
 			// Define the gravity vector
 			var gravity:b2Vec2 = new b2Vec2(0.0, 30.0);
 			
@@ -88,7 +95,6 @@ package
 		override public function update():void
 		{
 			physicsWorld.Step(timeStep, velocityIterations, positionIterations);
-			//for (var i:uint = 0; i < 4; i++)
 			emitter.emit("explode", 72, 32);
 			super.update();
 		}

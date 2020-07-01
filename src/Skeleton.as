@@ -7,6 +7,7 @@ package
 	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.Mask;
+	import net.flashpunk.Sfx;
 	import net.flashpunk.graphics.Spritemap;
 	
 	/**
@@ -16,11 +17,18 @@ package
 	public class Skeleton extends Entity 
 	{
 		[Embed(source = "assets/skeleton.png")] private const SKELETON:Class;
+		[Embed(source = "assets/death.mp3")] private const DEATH:Class;
+		[Embed(source = "assets/sword.mp3")] private const SWORD:Class;
+		
 		private static const ANIMS:Array = ['stay', 'idle', 'attack'];
 		private var current:String = 'idle';
 		private var timer:Timer;
+		private var deathSFX:Sfx;
+		private var swordSFX:Sfx;
 		private var dead:Boolean = false;
+		
 		public var sprite:Spritemap;
+		
 		public function Skeleton(x:Number=0, y:Number=0) 
 		{
 			sprite = new Spritemap(SKELETON, 150, 150);
@@ -37,18 +45,17 @@ package
 			timer.addEventListener(TimerEvent.TIMER_COMPLETE, OnTimerComplete);
 			timer.start();
 			
+			deathSFX = new Sfx(DEATH);
+			swordSFX = new Sfx(SWORD);
 		}
-		
-		//private function OnEndAnimation():void
-		//{
-			//complete = true;
-		//}
 		
 		override public function update():void
 		{
 			
-			if (collide('spike', x, y) && !dead)
+			if (collide('spike', x, y) && !dead){
+				deathSFX.play();
 				dead = true;
+			}
 			if (dead)
 				sprite.play('death');
 			else
@@ -59,6 +66,9 @@ package
 		private function OnTimerComplete(event:TimerEvent):void
 		{
 			current = ANIMS[FP.rand(ANIMS.length)];
+			if (current == 'attack') {
+				swordSFX.play();
+			}
 			timer.start();
 		}
 	}

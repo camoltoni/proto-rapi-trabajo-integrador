@@ -9,6 +9,7 @@ package
 	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.Mask;
+	import net.flashpunk.Sfx;
 	import net.flashpunk.graphics.Spritemap;
 	import net.flashpunk.tweens.misc.ColorTween;
 	import net.flashpunk.tweens.misc.VarTween;
@@ -22,6 +23,8 @@ package
 	public class Hero extends Entity 
 	{
 		[Embed(source = "assets/hero.png")] private const HERO:Class;
+		[Embed(source = "assets/jump.mp3")] private const JUMP:Class;
+		
 		private const FORCE:b2Vec2 = new b2Vec2(11.33, 0);
 		public var sprite:Spritemap;
 		public var body:b2Body;
@@ -30,6 +33,7 @@ package
 		private var lastVel:b2Vec2;
 		private var dead:Boolean = false;
 		private var deadTween:ColorTween;
+		private var jumpSFX:Sfx;
 		
 		public function Hero(x:Number=0, y:Number=0) 
 		{
@@ -48,6 +52,7 @@ package
 			lastVel = new b2Vec2();
 			deadTween = new ColorTween();
 			deadTween.tween(3, 0xffffff, 0xdc0404);
+			jumpSFX = new Sfx(JUMP);
 		}
 		
 		override public function update():void
@@ -62,6 +67,7 @@ package
 				return;
 			}
 			if ((Input.pressed(Key.W) || Input.pressed(Key.SPACE)) && (onPlatform || onFloor)) {
+				jumpSFX.play();
 				body.SetAwake(false);
 				body.ApplyImpulse(new b2Vec2(0, -17), body.GetWorldCenter());
 			}
