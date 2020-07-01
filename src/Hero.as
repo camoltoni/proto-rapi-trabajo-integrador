@@ -6,9 +6,12 @@ package
 	import Box2D.Dynamics.b2BodyDef;
 	import Box2D.Dynamics.b2FixtureDef;
 	import net.flashpunk.Entity;
+	import net.flashpunk.FP;
 	import net.flashpunk.Graphic;
 	import net.flashpunk.Mask;
 	import net.flashpunk.graphics.Spritemap;
+	import net.flashpunk.tweens.misc.ColorTween;
+	import net.flashpunk.tweens.misc.VarTween;
 	import net.flashpunk.utils.Input;
 	import net.flashpunk.utils.Key;
 	
@@ -19,12 +22,14 @@ package
 	public class Hero extends Entity 
 	{
 		[Embed(source = "assets/hero.png")] private const HERO:Class;
-		private const FORCE:b2Vec2 = new b2Vec2(12.6, 0);
+		private const FORCE:b2Vec2 = new b2Vec2(11.33, 0);
 		public var sprite:Spritemap;
 		public var body:b2Body;
 		private var onPlatform:Boolean = false;
 		private var onFloor:Boolean = false;
 		private var lastVel:b2Vec2;
+		private var dead:Boolean = false;
+		private var deadTween:ColorTween;
 		
 		public function Hero(x:Number=0, y:Number=0) 
 		{
@@ -41,27 +46,35 @@ package
 			type = 'hero';
 			MakeBody();
 			lastVel = new b2Vec2();
-			
+			deadTween = new ColorTween();
+			deadTween.tween(3, 0xffffff, 0xdc0404);
 		}
 		
 		override public function update():void
 		{
-			
+			if (!dead && collide('spike', x, y)) {
+				dead = true;
+				body.SetActive(false);
+			}
+			if (dead) {
+				deadTween.update();
+				sprite.color = deadTween.color;
+				return;
+			}
 			if ((Input.pressed(Key.W) || Input.pressed(Key.SPACE)) && (onPlatform || onFloor)) {
 				body.SetAwake(false);
-				body.ApplyImpulse(new b2Vec2(0, -12), body.GetWorldCenter());
+				body.ApplyImpulse(new b2Vec2(0, -17), body.GetWorldCenter());
 			}
 			var platform:Platform = Platform(collide('platform', x, y + 1));
 			if (platform && y + halfHeight < platform.y - platform.halfHeight) {
 				if (!onPlatform) {
 					onPlatform = true;
 					body.SetAwake(false);
-					trace(x, platform.x, x - platform.x);
 					if (x - platform.x < -halfWidth) {
-						body.ApplyImpulse(new b2Vec2(1, -0.5), body.GetWorldCenter());
+						body.ApplyImpulse(new b2Vec2(2, -1), body.GetWorldCenter());
 					}
 					if (x - platform.x  > halfWidth) {
-						body.ApplyImpulse(new b2Vec2( -1, -0.5), body.GetWorldCenter());
+						body.ApplyImpulse(new b2Vec2( -2, -1), body.GetWorldCenter());
 					}
 					body.SetAwake(true);
 				} else {
@@ -114,7 +127,7 @@ package
 			var fixtureDef:b2FixtureDef = new b2FixtureDef();
 			fixtureDef.shape = boxShape;
 			fixtureDef.friction = 0.6;
-			fixtureDef.density = 4;
+			fixtureDef.density = 1;
 			fixtureDef.restitution = 0;
  
 			body = GameWorld.physicsWorld.CreateBody(bodyDef);

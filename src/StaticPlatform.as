@@ -14,28 +14,22 @@ package
 	 * ...
 	 * @author César Alejandro Moltoni
 	 */
-	public class Wall extends Entity 
+	public class StaticPlatform extends Entity 
 	{
-		[Embed(source = "assets/wall_v.png")] private const WALL_V:Class;
-		[Embed(source = "assets/wall_h.png")] private const WALL_H:Class;
-		
+		[Embed(source = "assets/separator.png")] private const SEPA:Class;
 		public var image:Image;
 		public var body:b2Body;
 		
-		public function Wall(x:Number=0, y:Number=0, vertical:Boolean = true, type:String = 'wall') 
+		public function StaticPlatform(x:Number=0, y:Number=0) 
 		{
-			if (vertical) {
-				image = new Image(WALL_V);
-			} else  {
-				image = new Image(WALL_H);
-			}
-			image.alpha = 0.0;
-			this.type = type;
+			image = new Image(SEPA);
 			image.originX = image.width / 2;
 			image.originY = image.height / 2;
+			image.alpha = 0.0;
 			super(x, y, image);
-			setHitbox(image.width, image.height, image.originX, image.originY);
+			setHitbox(image.width, 0, image.originX, image.originY);
 			MakeBody();
+			type = 'floor';
 		}
 		
 		private function MakeBody():void
