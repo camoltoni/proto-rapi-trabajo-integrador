@@ -56,8 +56,10 @@ package
 				deathSFX.play();
 				dead = true;
 			}
-			if (dead)
+			if (dead) {
+				swordSFX.stop();
 				sprite.play('death');
+			}
 			else
 				sprite.play(current);
 			super.update();

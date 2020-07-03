@@ -25,8 +25,8 @@ package
 		public static const GRID:Number = 16;
 		
 		public static var physicsWorld:b2World;
-		public var velocityIterations:int = 30;
-		public var positionIterations:int = 30;
+		public var velocityIterations:int = 10;
+		public var positionIterations:int = 10;
 		public var timeStep:Number = 1.0 / 30.0;
 		public var timer:Timer;
 		private var ticks:int = -3;
@@ -35,7 +35,6 @@ package
 		
 		public function GameWorld() 
 		{
-			FP.screen.color = 0xd1dffa;
 			super();
 			addGraphic(new Image(BACK), 2);
 			addGraphic(new Image(FORE), -1);

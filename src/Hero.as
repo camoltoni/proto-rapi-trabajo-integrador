@@ -61,9 +61,13 @@ package
 				dead = true;
 				body.SetActive(false);
 			}
+			
 			if (dead) {
 				deadTween.update();
 				sprite.color = deadTween.color;
+				if (deadTween.percent >= 1) {
+					FP.world = new MessageWorld('Die to win');
+				}
 				return;
 			}
 			if ((Input.pressed(Key.W) || Input.pressed(Key.SPACE)) && (onPlatform || onFloor)) {

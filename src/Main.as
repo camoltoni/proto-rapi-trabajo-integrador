@@ -9,7 +9,8 @@ import net.flashpunk.FP;
 		public function Main()
 		{
 			super(640, 480, 60, false);
-			FP.world = new GameWorld;
+			FP.screen.color = 0xFFE0BD;
+			FP.world = new MessageWorld('Die to win');
 		}
 	}
 }
